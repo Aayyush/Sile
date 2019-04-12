@@ -1,0 +1,2056 @@
+$ echo -e "1" | /home/codio/workspace/sile/bin/sile --tokens
+INTEGER:"1"
+
+
+$ echo -e "1" | /home/codio/workspace/sile/bin/sile --ast
+1:stmts::
+1:expr-stmt::
+0:INTEGER:1:
+
+
+$ echo -e "1" | /home/codio/workspace/sile/bin/sile --typed-ast
+1:stmts::unit
+1:expr-stmt::unit
+0:INTEGER:1:int
+
+
+$ echo -e "1" | /home/codio/workspace/sile/bin/sile 
+
+
+$ echo -e "print 1" | /home/codio/workspace/sile/bin/sile --tokens
+PRINT:"print"
+INTEGER:"1"
+
+
+$ echo -e "print 1" | /home/codio/workspace/sile/bin/sile --ast
+1:stmts::
+1:print::
+0:INTEGER:1:
+
+
+$ echo -e "print 1" | /home/codio/workspace/sile/bin/sile --typed-ast
+1:stmts::unit
+1:print::unit
+0:INTEGER:1:int
+
+
+$ echo -e "print 1" | /home/codio/workspace/sile/bin/sile 
+1
+
+
+$ echo -e "print -(1 + 2 * 3 * 4) % (5/1)" | /home/codio/workspace/sile/bin/sile --tokens
+PRINT:"print"
+"-"
+"("
+INTEGER:"1"
+"+"
+INTEGER:"2"
+"*"
+INTEGER:"3"
+"*"
+INTEGER:"4"
+")"
+"%"
+"("
+INTEGER:"5"
+"/"
+INTEGER:"1"
+")"
+
+
+$ echo -e "print -(1 + 2 * 3 * 4) % (5/1)" | /home/codio/workspace/sile/bin/sile --ast
+1:stmts::
+1:print::
+2:%::
+1:negate::
+2:+::
+0:INTEGER:1:
+2:*::
+2:*::
+0:INTEGER:2:
+0:INTEGER:3:
+0:INTEGER:4:
+2:/::
+0:INTEGER:5:
+0:INTEGER:1:
+
+
+$ echo -e "print -(1 + 2 * 3 * 4) % (5/1)" | /home/codio/workspace/sile/bin/sile --typed-ast
+1:stmts::unit
+1:print::unit
+2:%::int
+1:negate::int
+2:+::int
+0:INTEGER:1:int
+2:*::int
+2:*::int
+0:INTEGER:2:int
+0:INTEGER:3:int
+0:INTEGER:4:int
+2:/::int
+0:INTEGER:5:int
+0:INTEGER:1:int
+
+
+$ echo -e "print -(1 + 2 * 3 * 4) % (5/1)" | /home/codio/workspace/sile/bin/sile 
+0
+
+
+$ echo -e "var x = 1 print x" | /home/codio/workspace/sile/bin/sile --tokens
+VAR:"var"
+NAME:"x"
+"="
+INTEGER:"1"
+PRINT:"print"
+NAME:"x"
+
+
+$ echo -e "var x = 1 print x" | /home/codio/workspace/sile/bin/sile --ast
+2:stmts::
+2:decl::
+0:NAME:x:
+0:INTEGER:1:
+1:print::
+0:NAME:x:
+
+
+$ echo -e "var x = 1 print x" | /home/codio/workspace/sile/bin/sile --typed-ast
+2:stmts::unit
+2:decl::unit
+0:NAME:x:int
+0:INTEGER:1:int
+1:print::unit
+0:NAME:x:int
+
+
+$ echo -e "var x = 1 print x" | /home/codio/workspace/sile/bin/sile 
+1
+
+
+$ echo -e "var x = 1 x = x + 1 print x" | /home/codio/workspace/sile/bin/sile --tokens
+VAR:"var"
+NAME:"x"
+"="
+INTEGER:"1"
+NAME:"x"
+"="
+NAME:"x"
+"+"
+INTEGER:"1"
+PRINT:"print"
+NAME:"x"
+
+
+$ echo -e "var x = 1 x = x + 1 print x" | /home/codio/workspace/sile/bin/sile --ast
+3:stmts::
+2:decl::
+0:NAME:x:
+0:INTEGER:1:
+2:assign::
+0:NAME:x:
+2:+::
+0:NAME:x:
+0:INTEGER:1:
+1:print::
+0:NAME:x:
+
+
+$ echo -e "var x = 1 x = x + 1 print x" | /home/codio/workspace/sile/bin/sile --typed-ast
+3:stmts::unit
+2:decl::unit
+0:NAME:x:int
+0:INTEGER:1:int
+2:assign::unit
+0:NAME:x:int
+2:+::int
+0:NAME:x:int
+0:INTEGER:1:int
+1:print::unit
+0:NAME:x:int
+
+
+$ echo -e "var x = 1 x = x + 1 print x" | /home/codio/workspace/sile/bin/sile 
+2
+
+
+$ echo -e "print 1 == 1 && 2 == 2" | /home/codio/workspace/sile/bin/sile --tokens
+PRINT:"print"
+INTEGER:"1"
+"=="
+INTEGER:"1"
+"&&"
+INTEGER:"2"
+"=="
+INTEGER:"2"
+
+
+$ echo -e "print 1 == 1 && 2 == 2" | /home/codio/workspace/sile/bin/sile --ast
+1:stmts::
+1:print::
+2:&&::
+2:==::
+0:INTEGER:1:
+0:INTEGER:1:
+2:==::
+0:INTEGER:2:
+0:INTEGER:2:
+
+
+$ echo -e "print 1 == 1 && 2 == 2" | /home/codio/workspace/sile/bin/sile --typed-ast
+1:stmts::unit
+1:print::unit
+2:&&::boolean
+2:==::boolean
+0:INTEGER:1:int
+0:INTEGER:1:int
+2:==::boolean
+0:INTEGER:2:int
+0:INTEGER:2:int
+
+
+$ echo -e "print 1 == 1 && 2 == 2" | /home/codio/workspace/sile/bin/sile 
+True
+
+
+$ echo -e "print 1 == 1 || 2 == 2" | /home/codio/workspace/sile/bin/sile --tokens
+PRINT:"print"
+INTEGER:"1"
+"=="
+INTEGER:"1"
+"||"
+INTEGER:"2"
+"=="
+INTEGER:"2"
+
+
+$ echo -e "print 1 == 1 || 2 == 2" | /home/codio/workspace/sile/bin/sile --ast
+1:stmts::
+1:print::
+2:||::
+2:==::
+0:INTEGER:1:
+0:INTEGER:1:
+2:==::
+0:INTEGER:2:
+0:INTEGER:2:
+
+
+$ echo -e "print 1 == 1 || 2 == 2" | /home/codio/workspace/sile/bin/sile --typed-ast
+1:stmts::unit
+1:print::unit
+2:||::boolean
+2:==::boolean
+0:INTEGER:1:int
+0:INTEGER:1:int
+2:==::boolean
+0:INTEGER:2:int
+0:INTEGER:2:int
+
+
+$ echo -e "print 1 == 1 || 2 == 2" | /home/codio/workspace/sile/bin/sile 
+True
+
+
+$ echo -e "print !1 == 1" | /home/codio/workspace/sile/bin/sile --tokens
+PRINT:"print"
+"!"
+INTEGER:"1"
+"=="
+INTEGER:"1"
+
+
+$ echo -e "print !1 == 1" | /home/codio/workspace/sile/bin/sile --ast
+1:stmts::
+1:print::
+1:not::
+2:==::
+0:INTEGER:1:
+0:INTEGER:1:
+
+
+$ echo -e "print !1 == 1" | /home/codio/workspace/sile/bin/sile --typed-ast
+1:stmts::unit
+1:print::unit
+1:not::boolean
+2:==::boolean
+0:INTEGER:1:int
+0:INTEGER:1:int
+
+
+$ echo -e "print !1 == 1" | /home/codio/workspace/sile/bin/sile 
+False
+
+
+$ echo -e "print 1 > 2" | /home/codio/workspace/sile/bin/sile --tokens
+PRINT:"print"
+INTEGER:"1"
+">"
+INTEGER:"2"
+
+
+$ echo -e "print 1 > 2" | /home/codio/workspace/sile/bin/sile --ast
+1:stmts::
+1:print::
+2:>::
+0:INTEGER:1:
+0:INTEGER:2:
+
+
+$ echo -e "print 1 > 2" | /home/codio/workspace/sile/bin/sile --typed-ast
+1:stmts::unit
+1:print::unit
+2:>::boolean
+0:INTEGER:1:int
+0:INTEGER:2:int
+
+
+$ echo -e "print 1 > 2" | /home/codio/workspace/sile/bin/sile 
+False
+
+
+$ echo -e "if 1 == 1 { print 1 } print 3" | /home/codio/workspace/sile/bin/sile --tokens
+IF:"if"
+INTEGER:"1"
+"=="
+INTEGER:"1"
+"{"
+PRINT:"print"
+INTEGER:"1"
+"}"
+PRINT:"print"
+INTEGER:"3"
+
+
+$ echo -e "if 1 == 1 { print 1 } print 3" | /home/codio/workspace/sile/bin/sile --ast
+2:stmts::
+2:if::
+2:==::
+0:INTEGER:1:
+0:INTEGER:1:
+1:stmts::
+1:print::
+0:INTEGER:1:
+1:print::
+0:INTEGER:3:
+
+
+$ echo -e "if 1 == 1 { print 1 } print 3" | /home/codio/workspace/sile/bin/sile --typed-ast
+2:stmts::unit
+2:if::unit
+2:==::boolean
+0:INTEGER:1:int
+0:INTEGER:1:int
+1:stmts::unit
+1:print::unit
+0:INTEGER:1:int
+1:print::unit
+0:INTEGER:3:int
+
+
+$ echo -e "if 1 == 1 { print 1 } print 3" | /home/codio/workspace/sile/bin/sile 
+1
+3
+
+
+$ echo -e "if 1 == 1 { print 1 } else { print 2 } print 3" | /home/codio/workspace/sile/bin/sile --tokens
+IF:"if"
+INTEGER:"1"
+"=="
+INTEGER:"1"
+"{"
+PRINT:"print"
+INTEGER:"1"
+"}"
+ELSE:"else"
+"{"
+PRINT:"print"
+INTEGER:"2"
+"}"
+PRINT:"print"
+INTEGER:"3"
+
+
+$ echo -e "if 1 == 1 { print 1 } else { print 2 } print 3" | /home/codio/workspace/sile/bin/sile --ast
+2:stmts::
+3:if::
+2:==::
+0:INTEGER:1:
+0:INTEGER:1:
+1:stmts::
+1:print::
+0:INTEGER:1:
+1:stmts::
+1:print::
+0:INTEGER:2:
+1:print::
+0:INTEGER:3:
+
+
+$ echo -e "if 1 == 1 { print 1 } else { print 2 } print 3" | /home/codio/workspace/sile/bin/sile --typed-ast
+2:stmts::unit
+3:if::unit
+2:==::boolean
+0:INTEGER:1:int
+0:INTEGER:1:int
+1:stmts::unit
+1:print::unit
+0:INTEGER:1:int
+1:stmts::unit
+1:print::unit
+0:INTEGER:2:int
+1:print::unit
+0:INTEGER:3:int
+
+
+$ echo -e "if 1 == 1 { print 1 } else { print 2 } print 3" | /home/codio/workspace/sile/bin/sile 
+1
+3
+
+
+$ echo -e "if 1 != 1 { print 1 } " | /home/codio/workspace/sile/bin/sile --tokens
+IF:"if"
+INTEGER:"1"
+"!="
+INTEGER:"1"
+"{"
+PRINT:"print"
+INTEGER:"1"
+"}"
+
+
+$ echo -e "if 1 != 1 { print 1 } " | /home/codio/workspace/sile/bin/sile --ast
+1:stmts::
+2:if::
+2:!=::
+0:INTEGER:1:
+0:INTEGER:1:
+1:stmts::
+1:print::
+0:INTEGER:1:
+
+
+$ echo -e "if 1 != 1 { print 1 } " | /home/codio/workspace/sile/bin/sile --typed-ast
+1:stmts::unit
+2:if::unit
+2:!=::boolean
+0:INTEGER:1:int
+0:INTEGER:1:int
+1:stmts::unit
+1:print::unit
+0:INTEGER:1:int
+
+
+$ echo -e "if 1 != 1 { print 1 } " | /home/codio/workspace/sile/bin/sile 
+
+
+$ echo -e "var x = 0 while x < 10 { print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile --tokens
+VAR:"var"
+NAME:"x"
+"="
+INTEGER:"0"
+WHILE:"while"
+NAME:"x"
+"<"
+INTEGER:"10"
+"{"
+PRINT:"print"
+NAME:"x"
+NAME:"x"
+"="
+NAME:"x"
+"+"
+INTEGER:"1"
+"}"
+PRINT:"print"
+"-"
+INTEGER:"1"
+
+
+$ echo -e "var x = 0 while x < 10 { print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile --ast
+3:stmts::
+2:decl::
+0:NAME:x:
+0:INTEGER:0:
+2:while::
+2:<::
+0:NAME:x:
+0:INTEGER:10:
+2:stmts::
+1:print::
+0:NAME:x:
+2:assign::
+0:NAME:x:
+2:+::
+0:NAME:x:
+0:INTEGER:1:
+1:print::
+1:negate::
+0:INTEGER:1:
+
+
+$ echo -e "var x = 0 while x < 10 { print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile --typed-ast
+3:stmts::unit
+2:decl::unit
+0:NAME:x:int
+0:INTEGER:0:int
+2:while::unit
+2:<::boolean
+0:NAME:x:int
+0:INTEGER:10:int
+2:stmts::unit
+1:print::unit
+0:NAME:x:int
+2:assign::unit
+0:NAME:x:int
+2:+::int
+0:NAME:x:int
+0:INTEGER:1:int
+1:print::unit
+1:negate::int
+0:INTEGER:1:int
+
+
+$ echo -e "var x = 0 while x < 10 { print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile 
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+-1
+
+
+$ echo -e "var x = 0 while x < 10 { if x % 7 == 0 { break } print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile --tokens
+VAR:"var"
+NAME:"x"
+"="
+INTEGER:"0"
+WHILE:"while"
+NAME:"x"
+"<"
+INTEGER:"10"
+"{"
+IF:"if"
+NAME:"x"
+"%"
+INTEGER:"7"
+"=="
+INTEGER:"0"
+"{"
+BREAK:"break"
+"}"
+PRINT:"print"
+NAME:"x"
+NAME:"x"
+"="
+NAME:"x"
+"+"
+INTEGER:"1"
+"}"
+PRINT:"print"
+"-"
+INTEGER:"1"
+
+
+$ echo -e "var x = 0 while x < 10 { if x % 7 == 0 { break } print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile --ast
+3:stmts::
+2:decl::
+0:NAME:x:
+0:INTEGER:0:
+2:while::
+2:<::
+0:NAME:x:
+0:INTEGER:10:
+3:stmts::
+2:if::
+2:==::
+2:%::
+0:NAME:x:
+0:INTEGER:7:
+0:INTEGER:0:
+1:stmts::
+0:break::
+1:print::
+0:NAME:x:
+2:assign::
+0:NAME:x:
+2:+::
+0:NAME:x:
+0:INTEGER:1:
+1:print::
+1:negate::
+0:INTEGER:1:
+
+
+$ echo -e "var x = 0 while x < 10 { if x % 7 == 0 { break } print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile --typed-ast
+3:stmts::unit
+2:decl::unit
+0:NAME:x:int
+0:INTEGER:0:int
+2:while::unit
+2:<::boolean
+0:NAME:x:int
+0:INTEGER:10:int
+3:stmts::unit
+2:if::unit
+2:==::boolean
+2:%::int
+0:NAME:x:int
+0:INTEGER:7:int
+0:INTEGER:0:int
+1:stmts::unit
+0:break::unit
+1:print::unit
+0:NAME:x:int
+2:assign::unit
+0:NAME:x:int
+2:+::int
+0:NAME:x:int
+0:INTEGER:1:int
+1:print::unit
+1:negate::int
+0:INTEGER:1:int
+
+
+$ echo -e "var x = 0 while x < 10 { if x % 7 == 0 { break } print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile 
+Traceback (most recent call last):
+  File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+    sys.exit(main(sys.argv[1:]))
+  File "/home/codio/workspace/sile/bin/sile", line 112, in main
+    return sile.run(config)
+  File "/home/codio/workspace/sile/src/sile.py", line 57, in run
+    mods = il.generate(typed)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 19, in generate
+    generate_module(mods, 'main', ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 25, in generate_module
+    return IlGenerator.generate(modules, mod, ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 32, in generate
+    self.stmts(self.function().new_block(), ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+    blk = self.stmt(blk, kid)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+    return func(blk, n)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 179, in while_action
+    return self._while_action(entry, n, header, body, afterwards)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 186, in _while_action
+    body_out = self.stmts(body, n.children[1])
+  File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+    blk = self.stmt(blk, kid)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+    return func(blk, n)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 171, in if_action
+    body_out.goto_link(afterwards)
+AttributeError: 'NoneType' object has no attribute 'goto_link'
+
+
+$ echo -e "var x = 0 loop: while x < 10 { if x % 7 == 0 { break loop } print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile --tokens
+VAR:"var"
+NAME:"x"
+"="
+INTEGER:"0"
+NAME:"loop"
+":"
+WHILE:"while"
+NAME:"x"
+"<"
+INTEGER:"10"
+"{"
+IF:"if"
+NAME:"x"
+"%"
+INTEGER:"7"
+"=="
+INTEGER:"0"
+"{"
+BREAK:"break"
+NAME:"loop"
+"}"
+PRINT:"print"
+NAME:"x"
+NAME:"x"
+"="
+NAME:"x"
+"+"
+INTEGER:"1"
+"}"
+PRINT:"print"
+"-"
+INTEGER:"1"
+
+
+$ echo -e "var x = 0 loop: while x < 10 { if x % 7 == 0 { break loop } print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile --ast
+Traceback (most recent call last):
+  File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+    sys.exit(main(sys.argv[1:]))
+  File "/home/codio/workspace/sile/bin/sile", line 112, in main
+    return sile.run(config)
+  File "/home/codio/workspace/sile/src/sile.py", line 40, in run
+    print ast.serialize()
+  File "/home/codio/workspace/sile/src/frontend/ast.py", line 101, in serialize
+    return "\n".join(self._serialize())
+  File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+    lines.extend(kid._serialize())
+  File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+    lines.extend(kid._serialize())
+  File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+    lines.extend(kid._serialize())
+  File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+    lines.extend(kid._serialize())
+  File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+    lines.extend(kid._serialize())
+  File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+    lines.extend(kid._serialize())
+  File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+    lines.extend(kid._serialize())
+AttributeError: 'Token' object has no attribute '_serialize'
+
+
+$ echo -e "var x = 0 loop: while x < 10 { if x % 7 == 0 { break loop } print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile --typed-ast
+Traceback (most recent call last):
+  File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+    sys.exit(main(sys.argv[1:]))
+  File "/home/codio/workspace/sile/bin/sile", line 112, in main
+    return sile.run(config)
+  File "/home/codio/workspace/sile/src/sile.py", line 44, in run
+    typed = sile_types.check(ast)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 14, in check
+    return TypeChecker.check(ast)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 24, in check
+    return checker.stmts(ast)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 56, in stmts
+    typed.addkid(self.stmt(kid))
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+    return actions[n.label](n)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 129, in label_stmt
+    stmt = self.stmt(n.children[1])
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+    return actions[n.label](n)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 123, in while_stmt
+    body = self.stmts(n.children[1])
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 56, in stmts
+    typed.addkid(self.stmt(kid))
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+    return actions[n.label](n)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 106, in if_stmt
+    then = self.stmts(n.children[1])
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 56, in stmts
+    typed.addkid(self.stmt(kid))
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+    return actions[n.label](n)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 139, in break_continue_stmt
+    label = self.expr(n.children[0])
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 207, in expr
+    "FLOAT": self.basic(types.FLOAT),
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 305, in dispatch
+    if n.label not in actions:
+AttributeError: 'Token' object has no attribute 'label'
+
+
+$ echo -e "var x = 0 loop: while x < 10 { if x % 7 == 0 { break loop } print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile 
+Traceback (most recent call last):
+  File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+    sys.exit(main(sys.argv[1:]))
+  File "/home/codio/workspace/sile/bin/sile", line 112, in main
+    return sile.run(config)
+  File "/home/codio/workspace/sile/src/sile.py", line 44, in run
+    typed = sile_types.check(ast)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 14, in check
+    return TypeChecker.check(ast)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 24, in check
+    return checker.stmts(ast)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 56, in stmts
+    typed.addkid(self.stmt(kid))
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+    return actions[n.label](n)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 129, in label_stmt
+    stmt = self.stmt(n.children[1])
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+    return actions[n.label](n)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 123, in while_stmt
+    body = self.stmts(n.children[1])
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 56, in stmts
+    typed.addkid(self.stmt(kid))
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+    return actions[n.label](n)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 106, in if_stmt
+    then = self.stmts(n.children[1])
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 56, in stmts
+    typed.addkid(self.stmt(kid))
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+    return actions[n.label](n)
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 139, in break_continue_stmt
+    label = self.expr(n.children[0])
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 207, in expr
+    "FLOAT": self.basic(types.FLOAT),
+  File "/home/codio/workspace/sile/src/sile_types/check.py", line 305, in dispatch
+    if n.label not in actions:
+AttributeError: 'Token' object has no attribute 'label'
+
+
+$ echo -e "var x = 0 while x < 10 { if x % 7 == 0 { x = x + 1 continue } print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile --tokens
+VAR:"var"
+NAME:"x"
+"="
+INTEGER:"0"
+WHILE:"while"
+NAME:"x"
+"<"
+INTEGER:"10"
+"{"
+IF:"if"
+NAME:"x"
+"%"
+INTEGER:"7"
+"=="
+INTEGER:"0"
+"{"
+NAME:"x"
+"="
+NAME:"x"
+"+"
+INTEGER:"1"
+CONTINUE:"continue"
+"}"
+PRINT:"print"
+NAME:"x"
+NAME:"x"
+"="
+NAME:"x"
+"+"
+INTEGER:"1"
+"}"
+PRINT:"print"
+"-"
+INTEGER:"1"
+
+
+$ echo -e "var x = 0 while x < 10 { if x % 7 == 0 { x = x + 1 continue } print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile --ast
+3:stmts::
+2:decl::
+0:NAME:x:
+0:INTEGER:0:
+2:while::
+2:<::
+0:NAME:x:
+0:INTEGER:10:
+3:stmts::
+2:if::
+2:==::
+2:%::
+0:NAME:x:
+0:INTEGER:7:
+0:INTEGER:0:
+2:stmts::
+2:assign::
+0:NAME:x:
+2:+::
+0:NAME:x:
+0:INTEGER:1:
+0:continue::
+1:print::
+0:NAME:x:
+2:assign::
+0:NAME:x:
+2:+::
+0:NAME:x:
+0:INTEGER:1:
+1:print::
+1:negate::
+0:INTEGER:1:
+
+
+$ echo -e "var x = 0 while x < 10 { if x % 7 == 0 { x = x + 1 continue } print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile --typed-ast
+3:stmts::unit
+2:decl::unit
+0:NAME:x:int
+0:INTEGER:0:int
+2:while::unit
+2:<::boolean
+0:NAME:x:int
+0:INTEGER:10:int
+3:stmts::unit
+2:if::unit
+2:==::boolean
+2:%::int
+0:NAME:x:int
+0:INTEGER:7:int
+0:INTEGER:0:int
+2:stmts::unit
+2:assign::unit
+0:NAME:x:int
+2:+::int
+0:NAME:x:int
+0:INTEGER:1:int
+0:continue::unit
+1:print::unit
+0:NAME:x:int
+2:assign::unit
+0:NAME:x:int
+2:+::int
+0:NAME:x:int
+0:INTEGER:1:int
+1:print::unit
+1:negate::int
+0:INTEGER:1:int
+
+
+$ echo -e "var x = 0 while x < 10 { if x % 7 == 0 { x = x + 1 continue } print x x = x + 1 } print -1" | /home/codio/workspace/sile/bin/sile 
+1
+2
+3
+4
+5
+6
+8
+9
+-1
+
+
+$ echo -e "if 1 == 1 && 2 == 2 { print 1 } " | /home/codio/workspace/sile/bin/sile --tokens
+IF:"if"
+INTEGER:"1"
+"=="
+INTEGER:"1"
+"&&"
+INTEGER:"2"
+"=="
+INTEGER:"2"
+"{"
+PRINT:"print"
+INTEGER:"1"
+"}"
+
+
+$ echo -e "if 1 == 1 && 2 == 2 { print 1 } " | /home/codio/workspace/sile/bin/sile --ast
+1:stmts::
+2:if::
+2:&&::
+2:==::
+0:INTEGER:1:
+0:INTEGER:1:
+2:==::
+0:INTEGER:2:
+0:INTEGER:2:
+1:stmts::
+1:print::
+0:INTEGER:1:
+
+
+$ echo -e "if 1 == 1 && 2 == 2 { print 1 } " | /home/codio/workspace/sile/bin/sile --typed-ast
+1:stmts::unit
+2:if::unit
+2:&&::boolean
+2:==::boolean
+0:INTEGER:1:int
+0:INTEGER:1:int
+2:==::boolean
+0:INTEGER:2:int
+0:INTEGER:2:int
+1:stmts::unit
+1:print::unit
+0:INTEGER:1:int
+
+
+$ echo -e "if 1 == 1 && 2 == 2 { print 1 } " | /home/codio/workspace/sile/bin/sile 
+1
+
+
+$ echo -e "if 1 == 1 && 2 == 2 { print 1 } print 3" | /home/codio/workspace/sile/bin/sile --tokens
+IF:"if"
+INTEGER:"1"
+"=="
+INTEGER:"1"
+"&&"
+INTEGER:"2"
+"=="
+INTEGER:"2"
+"{"
+PRINT:"print"
+INTEGER:"1"
+"}"
+PRINT:"print"
+INTEGER:"3"
+
+
+$ echo -e "if 1 == 1 && 2 == 2 { print 1 } print 3" | /home/codio/workspace/sile/bin/sile --ast
+2:stmts::
+2:if::
+2:&&::
+2:==::
+0:INTEGER:1:
+0:INTEGER:1:
+2:==::
+0:INTEGER:2:
+0:INTEGER:2:
+1:stmts::
+1:print::
+0:INTEGER:1:
+1:print::
+0:INTEGER:3:
+
+
+$ echo -e "if 1 == 1 && 2 == 2 { print 1 } print 3" | /home/codio/workspace/sile/bin/sile --typed-ast
+2:stmts::unit
+2:if::unit
+2:&&::boolean
+2:==::boolean
+0:INTEGER:1:int
+0:INTEGER:1:int
+2:==::boolean
+0:INTEGER:2:int
+0:INTEGER:2:int
+1:stmts::unit
+1:print::unit
+0:INTEGER:1:int
+1:print::unit
+0:INTEGER:3:int
+
+
+$ echo -e "if 1 == 1 && 2 == 2 { print 1 } print 3" | /home/codio/workspace/sile/bin/sile 
+1
+3
+
+
+$ echo -e "function one():int { return 1 } print one() == 1" | /home/codio/workspace/sile/bin/sile --tokens
+FUNCTION:"function"
+NAME:"one"
+"("
+")"
+":"
+NAME:"int"
+"{"
+RETURN:"return"
+INTEGER:"1"
+"}"
+PRINT:"print"
+NAME:"one"
+"("
+")"
+"=="
+INTEGER:"1"
+
+
+$ echo -e "function one():int { return 1 } print one() == 1" | /home/codio/workspace/sile/bin/sile --ast
+2:stmts::
+4:function::
+0:NAME:one:
+0:params::
+0:TYPE:int:
+1:stmts::
+1:return::
+0:INTEGER:1:
+1:print::
+2:==::
+2:call::
+0:NAME:one:
+0:exprs::
+0:INTEGER:1:
+
+
+$ echo -e "function one():int { return 1 } print one() == 1" | /home/codio/workspace/sile/bin/sile --typed-ast
+2:stmts::unit
+4:function::unit
+0:NAME:one:function():int
+0:params::unit
+0:TYPE:int:int
+1:stmts::unit
+1:return::unit
+0:INTEGER:1:int
+1:print::unit
+2:==::boolean
+2:call::int
+0:NAME:one:function():int
+0:exprs::unit
+0:INTEGER:1:int
+
+
+$ echo -e "function one():int { return 1 } print one() == 1" | /home/codio/workspace/sile/bin/sile 
+Traceback (most recent call last):
+  File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+    sys.exit(main(sys.argv[1:]))
+  File "/home/codio/workspace/sile/bin/sile", line 112, in main
+    return sile.run(config)
+  File "/home/codio/workspace/sile/src/sile.py", line 57, in run
+    mods = il.generate(typed)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 19, in generate
+    generate_module(mods, 'main', ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 25, in generate_module
+    return IlGenerator.generate(modules, mod, ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 32, in generate
+    self.stmts(self.function().new_block(), ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+    blk = self.stmt(blk, kid)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+    return func(blk, n)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 93, in print_action
+    a, blk = self.expr(blk, None, n.children[0])
+  File "/home/codio/workspace/sile/src/il/generate.py", line 247, in expr
+    "FLOAT": self.number,
+  File "/home/codio/workspace/sile/src/il/generate.py", line 332, in dispatch_expr
+    return func(blk, result, n)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 262, in binop
+    a, blk = self.expr(blk, None, n.children[0])
+TypeError: 'NoneType' object is not iterable
+
+
+$ echo -e "function add(a:int, b:int):int { return a + b } print add(1,2)" | /home/codio/workspace/sile/bin/sile --tokens
+FUNCTION:"function"
+NAME:"add"
+"("
+NAME:"a"
+":"
+NAME:"int"
+","
+NAME:"b"
+":"
+NAME:"int"
+")"
+":"
+NAME:"int"
+"{"
+RETURN:"return"
+NAME:"a"
+"+"
+NAME:"b"
+"}"
+PRINT:"print"
+NAME:"add"
+"("
+INTEGER:"1"
+","
+INTEGER:"2"
+")"
+
+
+$ echo -e "function add(a:int, b:int):int { return a + b } print add(1,2)" | /home/codio/workspace/sile/bin/sile --ast
+2:stmts::
+4:function::
+0:NAME:add:
+2:params::
+2:param::
+0:NAME:a:
+0:TYPE:int:
+2:param::
+0:NAME:b:
+0:TYPE:int:
+0:TYPE:int:
+1:stmts::
+1:return::
+2:+::
+0:NAME:a:
+0:NAME:b:
+1:print::
+2:call::
+0:NAME:add:
+2:exprs::
+0:INTEGER:1:
+0:INTEGER:2:
+
+
+$ echo -e "function add(a:int, b:int):int { return a + b } print add(1,2)" | /home/codio/workspace/sile/bin/sile --typed-ast
+2:stmts::unit
+4:function::unit
+0:NAME:add:function(int, int):int
+2:params::unit
+2:param::int
+0:NAME:a:int
+0:TYPE:int:int
+2:param::int
+0:NAME:b:int
+0:TYPE:int:int
+0:TYPE:int:int
+1:stmts::unit
+1:return::unit
+2:+::int
+0:NAME:a:int
+0:NAME:b:int
+1:print::unit
+2:call::int
+0:NAME:add:function(int, int):int
+2:exprs::unit
+0:INTEGER:1:int
+0:INTEGER:2:int
+
+
+$ echo -e "function add(a:int, b:int):int { return a + b } print add(1,2)" | /home/codio/workspace/sile/bin/sile 
+Traceback (most recent call last):
+  File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+    sys.exit(main(sys.argv[1:]))
+  File "/home/codio/workspace/sile/bin/sile", line 112, in main
+    return sile.run(config)
+  File "/home/codio/workspace/sile/src/sile.py", line 57, in run
+    mods = il.generate(typed)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 19, in generate
+    generate_module(mods, 'main', ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 25, in generate_module
+    return IlGenerator.generate(modules, mod, ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 32, in generate
+    self.stmts(self.function().new_block(), ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+    blk = self.stmt(blk, kid)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+    return func(blk, n)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 93, in print_action
+    a, blk = self.expr(blk, None, n.children[0])
+TypeError: 'NoneType' object is not iterable
+
+
+$ echo -e "function one():int { return 1 } function add(x:function():int, b:int):int { return x() + b } print add(one,2)" | /home/codio/workspace/sile/bin/sile --tokens
+FUNCTION:"function"
+NAME:"one"
+"("
+")"
+":"
+NAME:"int"
+"{"
+RETURN:"return"
+INTEGER:"1"
+"}"
+FUNCTION:"function"
+NAME:"add"
+"("
+NAME:"x"
+":"
+FUNCTION:"function"
+"("
+")"
+":"
+NAME:"int"
+","
+NAME:"b"
+":"
+NAME:"int"
+")"
+":"
+NAME:"int"
+"{"
+RETURN:"return"
+NAME:"x"
+"("
+")"
+"+"
+NAME:"b"
+"}"
+PRINT:"print"
+NAME:"add"
+"("
+NAME:"one"
+","
+INTEGER:"2"
+")"
+
+
+$ echo -e "function one():int { return 1 } function add(x:function():int, b:int):int { return x() + b } print add(one,2)" | /home/codio/workspace/sile/bin/sile --ast
+3:stmts::
+4:function::
+0:NAME:one:
+0:params::
+0:TYPE:int:
+1:stmts::
+1:return::
+0:INTEGER:1:
+4:function::
+0:NAME:add:
+2:params::
+2:param::
+0:NAME:x:
+2:function-type::
+0:types::
+0:TYPE:int:
+2:param::
+0:NAME:b:
+0:TYPE:int:
+0:TYPE:int:
+1:stmts::
+1:return::
+2:+::
+2:call::
+0:NAME:x:
+0:exprs::
+0:NAME:b:
+1:print::
+2:call::
+0:NAME:add:
+2:exprs::
+0:NAME:one:
+0:INTEGER:2:
+
+
+$ echo -e "function one():int { return 1 } function add(x:function():int, b:int):int { return x() + b } print add(one,2)" | /home/codio/workspace/sile/bin/sile --typed-ast
+3:stmts::unit
+4:function::unit
+0:NAME:one:function():int
+0:params::unit
+0:TYPE:int:int
+1:stmts::unit
+1:return::unit
+0:INTEGER:1:int
+4:function::unit
+0:NAME:add:function(function():int, int):int
+2:params::unit
+2:param::function():int
+0:NAME:x:function():int
+2:function-type::function():int
+0:types::unit
+0:TYPE:int:int
+2:param::int
+0:NAME:b:int
+0:TYPE:int:int
+0:TYPE:int:int
+1:stmts::unit
+1:return::unit
+2:+::int
+2:call::int
+0:NAME:x:function():int
+0:exprs::unit
+0:NAME:b:int
+1:print::unit
+2:call::int
+0:NAME:add:function(function():int, int):int
+2:exprs::unit
+0:NAME:one:function():int
+0:INTEGER:2:int
+
+
+$ echo -e "function one():int { return 1 } function add(x:function():int, b:int):int { return x() + b } print add(one,2)" | /home/codio/workspace/sile/bin/sile 
+Traceback (most recent call last):
+  File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+    sys.exit(main(sys.argv[1:]))
+  File "/home/codio/workspace/sile/bin/sile", line 112, in main
+    return sile.run(config)
+  File "/home/codio/workspace/sile/src/sile.py", line 57, in run
+    mods = il.generate(typed)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 19, in generate
+    generate_module(mods, 'main', ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 25, in generate_module
+    return IlGenerator.generate(modules, mod, ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 32, in generate
+    self.stmts(self.function().new_block(), ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+    blk = self.stmt(blk, kid)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+    return func(blk, n)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 93, in print_action
+    a, blk = self.expr(blk, None, n.children[0])
+TypeError: 'NoneType' object is not iterable
+
+
+$ echo -e "function echo(n:int):function():int { function inner():int { return n } return inner } \n\tfunction add(x:function():int, b:int):int { return x() + b } print add(echo(7),2)" | /home/codio/workspace/sile/bin/sile --tokens
+FUNCTION:"function"
+NAME:"echo"
+"("
+NAME:"n"
+":"
+NAME:"int"
+")"
+":"
+FUNCTION:"function"
+"("
+")"
+":"
+NAME:"int"
+"{"
+FUNCTION:"function"
+NAME:"inner"
+"("
+")"
+":"
+NAME:"int"
+"{"
+RETURN:"return"
+NAME:"n"
+"}"
+RETURN:"return"
+NAME:"inner"
+"}"
+FUNCTION:"function"
+NAME:"add"
+"("
+NAME:"x"
+":"
+FUNCTION:"function"
+"("
+")"
+":"
+NAME:"int"
+","
+NAME:"b"
+":"
+NAME:"int"
+")"
+":"
+NAME:"int"
+"{"
+RETURN:"return"
+NAME:"x"
+"("
+")"
+"+"
+NAME:"b"
+"}"
+PRINT:"print"
+NAME:"add"
+"("
+NAME:"echo"
+"("
+INTEGER:"7"
+")"
+","
+INTEGER:"2"
+")"
+
+
+$ echo -e "function echo(n:int):function():int { function inner():int { return n } return inner } \n\tfunction add(x:function():int, b:int):int { return x() + b } print add(echo(7),2)" | /home/codio/workspace/sile/bin/sile --ast
+3:stmts::
+4:function::
+0:NAME:echo:
+1:params::
+2:param::
+0:NAME:n:
+0:TYPE:int:
+2:function-type::
+0:types::
+0:TYPE:int:
+2:stmts::
+4:function::
+0:NAME:inner:
+0:params::
+0:TYPE:int:
+1:stmts::
+1:return::
+0:NAME:n:
+1:return::
+0:NAME:inner:
+4:function::
+0:NAME:add:
+2:params::
+2:param::
+0:NAME:x:
+2:function-type::
+0:types::
+0:TYPE:int:
+2:param::
+0:NAME:b:
+0:TYPE:int:
+0:TYPE:int:
+1:stmts::
+1:return::
+2:+::
+2:call::
+0:NAME:x:
+0:exprs::
+0:NAME:b:
+1:print::
+2:call::
+0:NAME:add:
+2:exprs::
+2:call::
+0:NAME:echo:
+1:exprs::
+0:INTEGER:7:
+0:INTEGER:2:
+
+
+$ echo -e "function echo(n:int):function():int { function inner():int { return n } return inner } \n\tfunction add(x:function():int, b:int):int { return x() + b } print add(echo(7),2)" | /home/codio/workspace/sile/bin/sile --typed-ast
+3:stmts::unit
+4:function::unit
+0:NAME:echo:function(int):function():int
+1:params::unit
+2:param::int
+0:NAME:n:int
+0:TYPE:int:int
+2:function-type::function():int
+0:types::unit
+0:TYPE:int:int
+2:stmts::unit
+4:function::unit
+0:NAME:inner:function():int
+0:params::unit
+0:TYPE:int:int
+1:stmts::unit
+1:return::unit
+0:NAME:n:int
+1:return::unit
+0:NAME:inner:function():int
+4:function::unit
+0:NAME:add:function(function():int, int):int
+2:params::unit
+2:param::function():int
+0:NAME:x:function():int
+2:function-type::function():int
+0:types::unit
+0:TYPE:int:int
+2:param::int
+0:NAME:b:int
+0:TYPE:int:int
+0:TYPE:int:int
+1:stmts::unit
+1:return::unit
+2:+::int
+2:call::int
+0:NAME:x:function():int
+0:exprs::unit
+0:NAME:b:int
+1:print::unit
+2:call::int
+0:NAME:add:function(function():int, int):int
+2:exprs::unit
+2:call::function():int
+0:NAME:echo:function(int):function():int
+1:exprs::unit
+0:INTEGER:7:int
+0:INTEGER:2:int
+
+
+$ echo -e "function echo(n:int):function():int { function inner():int { return n } return inner } \n\tfunction add(x:function():int, b:int):int { return x() + b } print add(echo(7),2)" | /home/codio/workspace/sile/bin/sile 
+Traceback (most recent call last):
+  File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+    sys.exit(main(sys.argv[1:]))
+  File "/home/codio/workspace/sile/bin/sile", line 112, in main
+    return sile.run(config)
+  File "/home/codio/workspace/sile/src/sile.py", line 57, in run
+    mods = il.generate(typed)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 19, in generate
+    generate_module(mods, 'main', ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 25, in generate_module
+    return IlGenerator.generate(modules, mod, ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 32, in generate
+    self.stmts(self.function().new_block(), ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+    blk = self.stmt(blk, kid)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+    return func(blk, n)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 93, in print_action
+    a, blk = self.expr(blk, None, n.children[0])
+TypeError: 'NoneType' object is not iterable
+
+
+$ echo -e "function one():float { return 1.0 } print one() == 1.0" | /home/codio/workspace/sile/bin/sile --tokens
+FUNCTION:"function"
+NAME:"one"
+"("
+")"
+":"
+NAME:"float"
+"{"
+RETURN:"return"
+FLOAT:"1.0"
+"}"
+PRINT:"print"
+NAME:"one"
+"("
+")"
+"=="
+FLOAT:"1.0"
+
+
+$ echo -e "function one():float { return 1.0 } print one() == 1.0" | /home/codio/workspace/sile/bin/sile --ast
+2:stmts::
+4:function::
+0:NAME:one:
+0:params::
+0:TYPE:float:
+1:stmts::
+1:return::
+0:FLOAT:1.0:
+1:print::
+2:==::
+2:call::
+0:NAME:one:
+0:exprs::
+0:FLOAT:1.0:
+
+
+$ echo -e "function one():float { return 1.0 } print one() == 1.0" | /home/codio/workspace/sile/bin/sile --typed-ast
+2:stmts::unit
+4:function::unit
+0:NAME:one:function():float
+0:params::unit
+0:TYPE:float:float
+1:stmts::unit
+1:return::unit
+0:FLOAT:1.0:float
+1:print::unit
+2:==::boolean
+2:call::float
+0:NAME:one:function():float
+0:exprs::unit
+0:FLOAT:1.0:float
+
+
+$ echo -e "function one():float { return 1.0 } print one() == 1.0" | /home/codio/workspace/sile/bin/sile 
+Traceback (most recent call last):
+  File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+    sys.exit(main(sys.argv[1:]))
+  File "/home/codio/workspace/sile/bin/sile", line 112, in main
+    return sile.run(config)
+  File "/home/codio/workspace/sile/src/sile.py", line 57, in run
+    mods = il.generate(typed)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 19, in generate
+    generate_module(mods, 'main', ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 25, in generate_module
+    return IlGenerator.generate(modules, mod, ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 32, in generate
+    self.stmts(self.function().new_block(), ast)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+    blk = self.stmt(blk, kid)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+    "stmts": self.stmts,
+  File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+    return func(blk, n)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 93, in print_action
+    a, blk = self.expr(blk, None, n.children[0])
+  File "/home/codio/workspace/sile/src/il/generate.py", line 247, in expr
+    "FLOAT": self.number,
+  File "/home/codio/workspace/sile/src/il/generate.py", line 332, in dispatch_expr
+    return func(blk, result, n)
+  File "/home/codio/workspace/sile/src/il/generate.py", line 262, in binop
+    a, blk = self.expr(blk, None, n.children[0])
+TypeError: 'NoneType' object is not iterable
+
+
+                                   RESULTS
+------------------------------------------------------------------------------
+{tokens} "1": PASSED :-)
+{ast} "1": PASSED :-)
+{typed-ast} "1": PASSED :-)
+{exec} "1": PASSED :-)
+{tokens} "print 1": PASSED :-)
+{ast} "print 1": PASSED :-)
+{typed-ast} "print 1": PASSED :-)
+{exec} "print 1": PASSED :-)
+{tokens} "print -(1 + 2 * 3 * 4) % (5/1)": PASSED :-)
+{ast} "print -(1 + 2 * 3 * 4) % (5/1)": PASSED :-)
+{typed-ast} "print -(1 + 2 * 3 * 4) % (5/1)": PASSED :-)
+{exec} "print -(1 + 2 * 3 * 4) % (5/1)": PASSED :-)
+{tokens} "var x = 1 print x": PASSED :-)
+{ast} "var x = 1 print x": PASSED :-)
+{typed-ast} "var x = 1 print x": PASSED :-)
+{exec} "var x = 1 print x": PASSED :-)
+{tokens} "var x = 1 x = x + 1 print x": PASSED :-)
+{ast} "var x = 1 x = x + 1 print x": PASSED :-)
+{typed-ast} "var x = 1 x = x + 1 print x": PASSED :-)
+{exec} "var x = 1 x = x + 1 print x": PASSED :-)
+{tokens} "print 1 == 1 && 2 == 2": PASSED :-)
+{ast} "print 1 == 1 && 2 == 2": PASSED :-)
+{typed-ast} "print 1 == 1 && 2 == 2": PASSED :-)
+{exec} "print 1 == 1 && 2 == 2": FAILED :-(
+  output did not match:
+     [
+    - "true",
+    + "True",
+     ]
+{tokens} "print 1 == 1 || 2 == 2": PASSED :-)
+{ast} "print 1 == 1 || 2 == 2": PASSED :-)
+{typed-ast} "print 1 == 1 || 2 == 2": PASSED :-)
+{exec} "print 1 == 1 || 2 == 2": FAILED :-(
+  output did not match:
+     [
+    - "true",
+    + "True",
+     ]
+{tokens} "print !1 == 1": PASSED :-)
+{ast} "print !1 == 1": PASSED :-)
+{typed-ast} "print !1 == 1": PASSED :-)
+{exec} "print !1 == 1": FAILED :-(
+  output did not match:
+     [
+    - "false",
+    + "False",
+     ]
+{tokens} "print 1 > 2": PASSED :-)
+{ast} "print 1 > 2": PASSED :-)
+{typed-ast} "print 1 > 2": PASSED :-)
+{exec} "print 1 > 2": FAILED :-(
+  output did not match:
+     [
+    - "false",
+    + "False",
+     ]
+{tokens} "if 1 == 1 { print 1 } print 3": PASSED :-)
+{ast} "if 1 == 1 { print 1 } print 3": PASSED :-)
+{typed-ast} "if 1 == 1 { print 1 } print 3": PASSED :-)
+{exec} "if 1 == 1 { print 1 } print 3": PASSED :-)
+{tokens} "if 1 == 1 { print 1 } else { print 2 } print 3": PASSED :-)
+{ast} "if 1 == 1 { print 1 } else { print 2 } print 3": PASSED :-)
+{typed-ast} "if 1 == 1 { print 1 } else { print 2 } print 3": PASSED :-)
+{exec} "if 1 == 1 { print 1 } else { print 2 } print 3": PASSED :-)
+{tokens} "if 1 != 1 { print 1 } ": PASSED :-)
+{ast} "if 1 != 1 { print 1 } ": PASSED :-)
+{typed-ast} "if 1 != 1 { print 1 } ": PASSED :-)
+{exec} "if 1 != 1 { print 1 } ": PASSED :-)
+{tokens} "var x = 0 while x < 10 { print x x = x + 1 } print -1": PASSED :-)
+{ast} "var x = 0 while x < 10 { print x x = x + 1 } print -1": PASSED :-)
+{typed-ast} "var x = 0 while x < 10 { print x x = x + 1 } print -1": PASSED :-)
+{exec} "var x = 0 while x < 10 { print x x = x + 1 } print -1": PASSED :-)
+{tokens} "var x = 0 while x < 10 { if x % 7 == 0 { break } print x x = x + 1 } print -1": PASSED :-)
+{ast} "var x = 0 while x < 10 { if x % 7 == 0 { break } print x x = x + 1 } print -1": PASSED :-)
+{typed-ast} "var x = 0 while x < 10 { if x % 7 == 0 { break } print x x = x + 1 } print -1": PASSED :-)
+{exec} "var x = 0 while x < 10 { if x % 7 == 0 { break } print x x = x + 1 } print -1": FAILED :-(
+  expected success got failure:
+    
+    Traceback (most recent call last):
+      File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+        sys.exit(main(sys.argv[1:]))
+      File "/home/codio/workspace/sile/bin/sile", line 112, in main
+        return sile.run(config)
+      File "/home/codio/workspace/sile/src/sile.py", line 57, in run
+        mods = il.generate(typed)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 19, in generate
+        generate_module(mods, 'main', ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 25, in generate_module
+        return IlGenerator.generate(modules, mod, ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 32, in generate
+        self.stmts(self.function().new_block(), ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+        blk = self.stmt(blk, kid)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+        return func(blk, n)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 179, in while_action
+        return self._while_action(entry, n, header, body, afterwards)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 186, in _while_action
+        body_out = self.stmts(body, n.children[1])
+      File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+        blk = self.stmt(blk, kid)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+        return func(blk, n)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 171, in if_action
+        body_out.goto_link(afterwards)
+    AttributeError: 'NoneType' object has no attribute 'goto_link'
+    
+{tokens} "var x = 0 loop: while x < 10 { if x % 7 == 0 { break loop } print x x = x + 1 } print -1": PASSED :-)
+{ast} "var x = 0 loop: while x < 10 { if x % 7 == 0 { break loop } print x x = x + 1 } print -1": FAILED :-(
+  expected success got failure:
+    
+    Traceback (most recent call last):
+      File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+        sys.exit(main(sys.argv[1:]))
+      File "/home/codio/workspace/sile/bin/sile", line 112, in main
+        return sile.run(config)
+      File "/home/codio/workspace/sile/src/sile.py", line 40, in run
+        print ast.serialize()
+      File "/home/codio/workspace/sile/src/frontend/ast.py", line 101, in serialize
+        return "\n".join(self._serialize())
+      File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+        lines.extend(kid._serialize())
+      File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+        lines.extend(kid._serialize())
+      File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+        lines.extend(kid._serialize())
+      File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+        lines.extend(kid._serialize())
+      File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+        lines.extend(kid._serialize())
+      File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+        lines.extend(kid._serialize())
+      File "/home/codio/workspace/sile/src/frontend/ast.py", line 112, in _serialize
+        lines.extend(kid._serialize())
+    AttributeError: 'Token' object has no attribute '_serialize'
+    
+{typed-ast} "var x = 0 loop: while x < 10 { if x % 7 == 0 { break loop } print x x = x + 1 } print -1": FAILED :-(
+  expected success got failure:
+    
+    Traceback (most recent call last):
+      File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+        sys.exit(main(sys.argv[1:]))
+      File "/home/codio/workspace/sile/bin/sile", line 112, in main
+        return sile.run(config)
+      File "/home/codio/workspace/sile/src/sile.py", line 44, in run
+        typed = sile_types.check(ast)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 14, in check
+        return TypeChecker.check(ast)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 24, in check
+        return checker.stmts(ast)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 56, in stmts
+        typed.addkid(self.stmt(kid))
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+        return actions[n.label](n)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 129, in label_stmt
+        stmt = self.stmt(n.children[1])
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+        return actions[n.label](n)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 123, in while_stmt
+        body = self.stmts(n.children[1])
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 56, in stmts
+        typed.addkid(self.stmt(kid))
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+        return actions[n.label](n)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 106, in if_stmt
+        then = self.stmts(n.children[1])
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 56, in stmts
+        typed.addkid(self.stmt(kid))
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+        return actions[n.label](n)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 139, in break_continue_stmt
+        label = self.expr(n.children[0])
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 207, in expr
+        "FLOAT": self.basic(types.FLOAT),
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 305, in dispatch
+        if n.label not in actions:
+    AttributeError: 'Token' object has no attribute 'label'
+    
+{exec} "var x = 0 loop: while x < 10 { if x % 7 == 0 { break loop } print x x = x + 1 } print -1": FAILED :-(
+  expected success got failure:
+    
+    Traceback (most recent call last):
+      File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+        sys.exit(main(sys.argv[1:]))
+      File "/home/codio/workspace/sile/bin/sile", line 112, in main
+        return sile.run(config)
+      File "/home/codio/workspace/sile/src/sile.py", line 44, in run
+        typed = sile_types.check(ast)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 14, in check
+        return TypeChecker.check(ast)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 24, in check
+        return checker.stmts(ast)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 56, in stmts
+        typed.addkid(self.stmt(kid))
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+        return actions[n.label](n)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 129, in label_stmt
+        stmt = self.stmt(n.children[1])
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+        return actions[n.label](n)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 123, in while_stmt
+        body = self.stmts(n.children[1])
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 56, in stmts
+        typed.addkid(self.stmt(kid))
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+        return actions[n.label](n)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 106, in if_stmt
+        then = self.stmts(n.children[1])
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 56, in stmts
+        typed.addkid(self.stmt(kid))
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 73, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 308, in dispatch
+        return actions[n.label](n)
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 139, in break_continue_stmt
+        label = self.expr(n.children[0])
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 207, in expr
+        "FLOAT": self.basic(types.FLOAT),
+      File "/home/codio/workspace/sile/src/sile_types/check.py", line 305, in dispatch
+        if n.label not in actions:
+    AttributeError: 'Token' object has no attribute 'label'
+    
+{tokens} "var x = 0 while x < 10 { if x % 7 == 0 { x = x + 1 continue } print x x = x + 1 } print -1": PASSED :-)
+{ast} "var x = 0 while x < 10 { if x % 7 == 0 { x = x + 1 continue } print x x = x + 1 } print -1": PASSED :-)
+{typed-ast} "var x = 0 while x < 10 { if x % 7 == 0 { x = x + 1 continue } print x x = x + 1 } print -1": PASSED :-)
+{exec} "var x = 0 while x < 10 { if x % 7 == 0 { x = x + 1 continue } print x x = x + 1 } print -1": PASSED :-)
+{tokens} "if 1 == 1 && 2 == 2 { print 1 } ": PASSED :-)
+{ast} "if 1 == 1 && 2 == 2 { print 1 } ": PASSED :-)
+{typed-ast} "if 1 == 1 && 2 == 2 { print 1 } ": PASSED :-)
+{exec} "if 1 == 1 && 2 == 2 { print 1 } ": PASSED :-)
+{tokens} "if 1 == 1 && 2 == 2 { print 1 } print 3": PASSED :-)
+{ast} "if 1 == 1 && 2 == 2 { print 1 } print 3": PASSED :-)
+{typed-ast} "if 1 == 1 && 2 == 2 { print 1 } print 3": PASSED :-)
+{exec} "if 1 == 1 && 2 == 2 { print 1 } print 3": PASSED :-)
+{tokens} "function one():int { return 1 } print one() == 1": PASSED :-)
+{ast} "function one():int { return 1 } print one() == 1": PASSED :-)
+{typed-ast} "function one():int { return 1 } print one() == 1": PASSED :-)
+{exec} "function one():int { return 1 } print one() == 1": FAILED :-(
+  expected success got failure:
+    
+    Traceback (most recent call last):
+      File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+        sys.exit(main(sys.argv[1:]))
+      File "/home/codio/workspace/sile/bin/sile", line 112, in main
+        return sile.run(config)
+      File "/home/codio/workspace/sile/src/sile.py", line 57, in run
+        mods = il.generate(typed)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 19, in generate
+        generate_module(mods, 'main', ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 25, in generate_module
+        return IlGenerator.generate(modules, mod, ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 32, in generate
+        self.stmts(self.function().new_block(), ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+        blk = self.stmt(blk, kid)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+        return func(blk, n)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 93, in print_action
+        a, blk = self.expr(blk, None, n.children[0])
+      File "/home/codio/workspace/sile/src/il/generate.py", line 247, in expr
+        "FLOAT": self.number,
+      File "/home/codio/workspace/sile/src/il/generate.py", line 332, in dispatch_expr
+        return func(blk, result, n)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 262, in binop
+        a, blk = self.expr(blk, None, n.children[0])
+    TypeError: 'NoneType' object is not iterable
+    
+{tokens} "function add(a:int, b:int):int { return a + b } print add(1,2)": PASSED :-)
+{ast} "function add(a:int, b:int):int { return a + b } print add(1,2)": PASSED :-)
+{typed-ast} "function add(a:int, b:int):int { return a + b } print add(1,2)": PASSED :-)
+{exec} "function add(a:int, b:int):int { return a + b } print add(1,2)": FAILED :-(
+  expected success got failure:
+    
+    Traceback (most recent call last):
+      File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+        sys.exit(main(sys.argv[1:]))
+      File "/home/codio/workspace/sile/bin/sile", line 112, in main
+        return sile.run(config)
+      File "/home/codio/workspace/sile/src/sile.py", line 57, in run
+        mods = il.generate(typed)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 19, in generate
+        generate_module(mods, 'main', ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 25, in generate_module
+        return IlGenerator.generate(modules, mod, ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 32, in generate
+        self.stmts(self.function().new_block(), ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+        blk = self.stmt(blk, kid)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+        return func(blk, n)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 93, in print_action
+        a, blk = self.expr(blk, None, n.children[0])
+    TypeError: 'NoneType' object is not iterable
+    
+{tokens} "function one():int { return 1 } function add(x:function():int, b:int):int { return x() + b } print add(one,2)": PASSED :-)
+{ast} "function one():int { return 1 } function add(x:function():int, b:int):int { return x() + b } print add(one,2)": PASSED :-)
+{typed-ast} "function one():int { return 1 } function add(x:function():int, b:int):int { return x() + b } print add(one,2)": PASSED :-)
+{exec} "function one():int { return 1 } function add(x:function():int, b:int):int { return x() + b } print add(one,2)": FAILED :-(
+  expected success got failure:
+    
+    Traceback (most recent call last):
+      File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+        sys.exit(main(sys.argv[1:]))
+      File "/home/codio/workspace/sile/bin/sile", line 112, in main
+        return sile.run(config)
+      File "/home/codio/workspace/sile/src/sile.py", line 57, in run
+        mods = il.generate(typed)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 19, in generate
+        generate_module(mods, 'main', ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 25, in generate_module
+        return IlGenerator.generate(modules, mod, ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 32, in generate
+        self.stmts(self.function().new_block(), ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+        blk = self.stmt(blk, kid)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+        return func(blk, n)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 93, in print_action
+        a, blk = self.expr(blk, None, n.children[0])
+    TypeError: 'NoneType' object is not iterable
+    
+{tokens} "function echo(n:int):function():int { function inner():int { return n } return inner } \n\tfunction add(x:function():int, b:int):int { return x() + b } print add(echo(7),2)": PASSED :-)
+{ast} "function echo(n:int):function():int { function inner():int { return n } return inner } \n\tfunction add(x:function():int, b:int):int { return x() + b } print add(echo(7),2)": PASSED :-)
+{typed-ast} "function echo(n:int):function():int { function inner():int { return n } return inner } \n\tfunction add(x:function():int, b:int):int { return x() + b } print add(echo(7),2)": PASSED :-)
+{exec} "function echo(n:int):function():int { function inner():int { return n } return inner } \n\tfunction add(x:function():int, b:int):int { return x() + b } print add(echo(7),2)": FAILED :-(
+  expected success got failure:
+    
+    Traceback (most recent call last):
+      File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+        sys.exit(main(sys.argv[1:]))
+      File "/home/codio/workspace/sile/bin/sile", line 112, in main
+        return sile.run(config)
+      File "/home/codio/workspace/sile/src/sile.py", line 57, in run
+        mods = il.generate(typed)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 19, in generate
+        generate_module(mods, 'main', ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 25, in generate_module
+        return IlGenerator.generate(modules, mod, ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 32, in generate
+        self.stmts(self.function().new_block(), ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+        blk = self.stmt(blk, kid)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+        return func(blk, n)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 93, in print_action
+        a, blk = self.expr(blk, None, n.children[0])
+    TypeError: 'NoneType' object is not iterable
+    
+{tokens} "function one():float { return 1.0 } print one() == 1.0": PASSED :-)
+{ast} "function one():float { return 1.0 } print one() == 1.0": PASSED :-)
+{typed-ast} "function one():float { return 1.0 } print one() == 1.0": PASSED :-)
+{exec} "function one():float { return 1.0 } print one() == 1.0": FAILED :-(
+  expected success got failure:
+    
+    Traceback (most recent call last):
+      File "/home/codio/workspace/sile/bin/sile", line 115, in <module>
+        sys.exit(main(sys.argv[1:]))
+      File "/home/codio/workspace/sile/bin/sile", line 112, in main
+        return sile.run(config)
+      File "/home/codio/workspace/sile/src/sile.py", line 57, in run
+        mods = il.generate(typed)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 19, in generate
+        generate_module(mods, 'main', ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 25, in generate_module
+        return IlGenerator.generate(modules, mod, ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 32, in generate
+        self.stmts(self.function().new_block(), ast)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 59, in stmts
+        blk = self.stmt(blk, kid)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 76, in stmt
+        "stmts": self.stmts,
+      File "/home/codio/workspace/sile/src/il/generate.py", line 325, in dispatch_stmt
+        return func(blk, n)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 93, in print_action
+        a, blk = self.expr(blk, None, n.children[0])
+      File "/home/codio/workspace/sile/src/il/generate.py", line 247, in expr
+        "FLOAT": self.number,
+      File "/home/codio/workspace/sile/src/il/generate.py", line 332, in dispatch_expr
+        return func(blk, result, n)
+      File "/home/codio/workspace/sile/src/il/generate.py", line 262, in binop
+        a, blk = self.expr(blk, None, n.children[0])
+    TypeError: 'NoneType' object is not iterable
+    
+------------------------------------------------------------------------------
+                                         score: 85.87%, passed: 79, failed: 13
