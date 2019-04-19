@@ -217,8 +217,7 @@ class _Parser(object):
         except SileParseError:
             n = Node("break")
             return n, break_idx
-        n = (Node("break").addkid(name))
-        print(n)
+        n = Node("break").addkid(Node("NAME", value=name.lexeme))
         return n, name_idx
 
     # ContinueStmt -> CONTINUE
@@ -230,7 +229,7 @@ class _Parser(object):
         except SileParseError:
             n = Node("continue")
             return n, continue_idx
-        n = Node("continue").addkid(name)
+        n = Node("continue").addkid(Node("NAME", value = name.lexeme))
         return n, name_idx
 
     # FunctionStmt -> function NAME ( Params ) : TypeExpr BlockStmt

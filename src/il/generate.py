@@ -173,6 +173,8 @@ class IlGenerator(object):
         return afterwards
 
     def while_action(self, entry, n):
+        # Check if this a labelled loop, if true, use the continue and exit 
+        # block from the symbol table. 
         header = self.function().new_block()
         body = self.function().new_block()
         afterwards = self.function().new_block()
@@ -190,11 +192,21 @@ class IlGenerator(object):
 
     def label_action(self, entry, n):
         # TODO: IMPLEMENT
-        pass
+        # Get the loop cont and exit. 
+        label_name = n.children[0].value
+        self.function().add_label(label_name, self.function().new_block(), self.function().new_block())
+        return entry
 
     def break_action(self, blk, n):
         # TODO: IMPLEMENT
-        pass
+        if len(n.children) == 0:
+            header = self.function().loop_exit()
+        else:
+            label = n.children[0].value
+            header = self.symbols[label].exit_blk
+        blk.goto_link(header)
+        dead = self.function().new_block()
+        return dead
 
     def continue_action(self, blk, n):
         if len(n.children) == 0:
