@@ -202,7 +202,11 @@ class IlMachine(object):
 
         # instrinsic
         elif inst.op == il.OPS['PRINT']:
-            print(self.value(inst.a))
+            temp = self.value(inst.a)
+            if isinstance(temp, bool):
+                print("true" if temp else "false")
+            else:
+                print(self.value(inst.a))
 
         else:
             raise IlExecutionException("unknown instruction {}".format(inst))
