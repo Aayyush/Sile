@@ -99,6 +99,7 @@ class IlGenerator(object):
         return blk
 
     def return_action(self, blk, n):
+        print("return action")
         a, blk = self.expr(blk, None, n.children[0])
         if isinstance(a, il.FunctionRef):
             closure = self.module.lookup(a).closure(self.module, self.symbols)
@@ -223,15 +224,19 @@ class IlGenerator(object):
         return blk
 
     def function_action(self, blk, n):
-        type = n.children[0].type
         name = n.children[0].value
+        body = n.children[3]
         params = [
             il.Param(id=idx, name=param.children[0].value, type=param.type)
             for idx, param in enumerate(n.children[1].children)]
-        body = n.children[3]
         free = freevars(n)
         fn = self.push_function(name, type, params, free)
-        # TODO: FINISH IMPLEMENTATION
+        
+        # Add function to symbol table. 
+        self.symbols[fn.name] = fn.ref()
+        self.stmts(fn.new_block(), body)
+        self.pop_function()
+        return blk
 
     def expr(self, blk, result, n):
         return self.dispatch_expr(blk, result, n, {
@@ -314,8 +319,13 @@ class IlGenerator(object):
         return result, exit_blk
 
     def call(self, blk, result, n):
-        # TODO: IMPLEMENT
-        pass
+        # Find function reference, and append it to the block. 
+        # n.children has name. 
+        function_name = n.children[0].value;
+        if result is None:
+            result = self.new_register(n.type)
+        blk.append(il.Instruction(il.OPS['CALL'], self.symbols.get(function_name), None, result))
+        return result, blk
 
     def name(self, blk, result, n):
         if result is None:

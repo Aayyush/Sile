@@ -176,8 +176,13 @@ class IlMachine(object):
             self.store(inst.result, False if self.value(inst.a) else True)
         # function call related
         elif inst.op == il.OPS['CALL']:
-            # TODO: IMPLEMENT
-            pass
+            # Function to call. Self.value returns Function object. 
+            function = self.value(inst.a)
+            
+            print(function.name)
+            self.push_frame(addr, function, inst.result, [], dict())
+            # self.execute(Address(function, 0, 0))
+            self.pop_frame()
         elif inst.op == il.OPS['PRM']:
             self.store(inst.result, self.value(inst.a))
         elif inst.op == il.OPS['RTRN']:
