@@ -2,5 +2,5 @@
 
 from generate import generate
 from interpret import run
-from il import IlGenException
+from il import IlGenException, Function
 

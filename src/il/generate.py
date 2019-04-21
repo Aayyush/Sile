@@ -42,8 +42,9 @@ class IlGenerator(object):
         return self.functions[-1]
 
     def push_function(self, name, type, params, freevars):
+        # Modifying new function to take in function reference. 
         fn = self.module.new_function(
-            name, type, params=params, parent=self.function().id, freevars=freevars)
+            name, type, params=params, parent=self.function().ref(), freevars=freevars)
         self.functions.append(fn)
         return fn
 
@@ -224,18 +225,18 @@ class IlGenerator(object):
         return blk
 
     def function_action(self, blk, n):
+        function_type = n.children[2].value
         name = n.children[0].value
         body = n.children[3]
         params = [
             il.Param(id=idx, name=param.children[0].value, type=param.type)
             for idx, param in enumerate(n.children[1].children)]
         free = freevars(n)
-        fn = self.push_function(name, type, params, free)
+        fn = self.push_function(name, function_type, params, free)
         
-        # Add function to symbol table. 
+        # Add function reference to symbol table. 
         self.symbols[fn.name] = fn.ref()
         self.stmts(fn.new_block(), body)
-        self.pop_function()
         return blk
 
     def expr(self, blk, result, n):
@@ -322,9 +323,14 @@ class IlGenerator(object):
         # Find function reference, and append it to the block. 
         # n.children has name. 
         function_name = n.children[0].value;
+        function = self.module.lookup(self.symbols.get(function_name))
         if result is None:
-            result = self.new_register(n.type)
-        blk.append(il.Instruction(il.OPS['CALL'], self.symbols.get(function_name), None, result))
+            # Get the function parent function and create local variable in the parent 
+            # to hold return value.
+            calling_function = self.module.lookup(function.parent)
+            result = calling_function.new_register(n.type)
+        # SymbolTable returns the function reference. 
+        blk.append(il.Instruction(il.OPS['CALL'], self.symbols.get(function_name), function.params, result))
         return result, blk
 
     def name(self, blk, result, n):
