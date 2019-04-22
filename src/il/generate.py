@@ -231,24 +231,35 @@ class IlGenerator(object):
             il.Param(id=idx, name=param.children[0].value, type=param.type)
             for idx, param in enumerate(n.children[1].children)]
         free = freevars(n)
+        
+        # Push the function into the function list. 
+        # self.function() returns this function now. 
         fn = self.push_function(name, function_type, params, free)
         
-        # Add function reference to symbol table. 
+
+        # Add function reference to the symbol table of the calling function. 
         self.symbols[fn.name] = fn.ref()
-        #SymbolTable for the function. 
+        
+        # Push a new symbol table for the function. 
         self.symbols = self.symbols.push()
         
+        # Create a new block for the function. 
         function_block = fn.new_block()
         for i, param in enumerate(params):
+            
             # Create a local register for each parameter. 
             param_register = fn.new_register(param.type)
+            
+            # Add the parameter to symbol_table. 
             self.symbols[param.name] = param_register 
             
             # Create local registers for parameters. 
             function_block.append(il.Instruction(il.OPS['PRM'], il.Constant(param.id, param.type), None, param_register))
             
-        # Use PRM to read the parameters. 
         self.stmts(function_block, body)
+        
+        # Remove the function from the function list. 
+        # After this call, self.function() should not return this function. 
         self.pop_function()
         return blk
 
@@ -340,12 +351,8 @@ class IlGenerator(object):
         for expr in exprs.children:
             r, _ = self.expr(blk, None, expr)
             temp.append(r)
-       #  print("Function name: {}".format(function_name))
-        function = self.module.lookup(self.symbols.get(function_name))
+        # function = self.module.lookup(self.symbols.get(function_name))
         if result is None:
-            # Get the function parent function and create local variable in the parent 
-            # to hold return value.
-            # calling_function = self.module.lookup(function.parent)
             result = self.function().new_register(n.type)
         # SymbolTable returns the function reference. 
         blk.append(il.Instruction(il.OPS['CALL'], self.symbols.get(function_name), temp, result))
