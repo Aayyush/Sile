@@ -102,6 +102,7 @@ class IlMachine(object):
         addr = start_addr
         while addr is not None:
             try:
+                # print(addr.fn.ref, addr.block, addr.inst)
                 addr = self.once(addr)
             except:
                 print 'error'
@@ -179,6 +180,8 @@ class IlMachine(object):
             # Function to be called. 
             callee = self.value(inst.a)
             captured = []
+            
+            return_addr = Address(addr.fn, addr.block, addr.inst + 1)
             if isinstance(callee, il.Function):
                 pass
             elif isinstance(callee, RuntimeClosure):
@@ -186,15 +189,14 @@ class IlMachine(object):
                 callee = self.callee.lookup(callee.fn)
             else:
                 raise IlExecutionException("can't call a {}".format(callee))
-            # params = [self.value(param) for param in inst.b]
-            params = []
-            frame = self.push_frame(addr, callee, inst.result, params, captured)
-            # self.execute(Address(callee, 0, 0))
-            self.pop_frame()
-            
-            
+            params = [self.value(param) for param in inst.b]
+            frame = self.push_frame(return_addr, callee, inst.result, params, captured)
+            self.execute(Address(callee, 0, 0))
+            return None
         elif inst.op == il.OPS['PRM']:
-            self.store(inst.result, self.value(inst.a))
+            # Read params from the frame. 
+            frame = self.frame()
+            self.store(inst.result, frame.params[self.value(inst.a)])
         elif inst.op == il.OPS['RTRN']:
             frame = self.frame()
             value = self.value(inst.a)

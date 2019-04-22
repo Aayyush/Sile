@@ -42,7 +42,7 @@ class IlGenerator(object):
         return self.functions[-1]
 
     def push_function(self, name, type, params, freevars):
-        # Modifying new function to take in function reference. 
+        # Modifying new function to take in function reference.
         fn = self.module.new_function(
             name, type, params=params, parent=self.function().ref(), freevars=freevars)
         self.functions.append(fn)
@@ -100,7 +100,6 @@ class IlGenerator(object):
         return blk
 
     def return_action(self, blk, n):
-        print("return action")
         a, blk = self.expr(blk, None, n.children[0])
         if isinstance(a, il.FunctionRef):
             closure = self.module.lookup(a).closure(self.module, self.symbols)
@@ -236,7 +235,21 @@ class IlGenerator(object):
         
         # Add function reference to symbol table. 
         self.symbols[fn.name] = fn.ref()
-        self.stmts(fn.new_block(), body)
+        #SymbolTable for the function. 
+        self.symbols = self.symbols.push()
+        
+        function_block = fn.new_block()
+        for i, param in enumerate(params):
+            # Create a local register for each parameter. 
+            param_register = fn.new_register(param.type)
+            self.symbols[param.name] = param_register 
+            
+            # Create local registers for parameters. 
+            function_block.append(il.Instruction(il.OPS['PRM'], il.Constant(param.id, param.type), None, param_register))
+            
+        # Use PRM to read the parameters. 
+        self.stmts(function_block, body)
+        self.pop_function()
         return blk
 
     def expr(self, blk, result, n):
@@ -321,16 +334,21 @@ class IlGenerator(object):
 
     def call(self, blk, result, n):
         # Find function reference, and append it to the block. 
-        # n.children has name. 
-        function_name = n.children[0].value;
+        function_name = n.children[0].value
+        exprs = n.children[1]
+        temp = []
+        for expr in exprs.children:
+            r, _ = self.expr(blk, None, expr)
+            temp.append(r)
+       #  print("Function name: {}".format(function_name))
         function = self.module.lookup(self.symbols.get(function_name))
         if result is None:
             # Get the function parent function and create local variable in the parent 
             # to hold return value.
-            calling_function = self.module.lookup(function.parent)
-            result = calling_function.new_register(n.type)
+            # calling_function = self.module.lookup(function.parent)
+            result = self.function().new_register(n.type)
         # SymbolTable returns the function reference. 
-        blk.append(il.Instruction(il.OPS['CALL'], self.symbols.get(function_name), function.params, result))
+        blk.append(il.Instruction(il.OPS['CALL'], self.symbols.get(function_name), temp, result))
         return result, blk
 
     def name(self, blk, result, n):
