@@ -186,7 +186,7 @@ class IlMachine(object):
                 pass
             elif isinstance(callee, RuntimeClosure):
                 captured = callee.captured
-                callee = self.callee.lookup(callee.fn)
+                callee = self.modules.lookup(callee.fn)
             else:
                 raise IlExecutionException("can't call a {}".format(callee))
             params = [self.value(param) for param in inst.b]
