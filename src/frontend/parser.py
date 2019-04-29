@@ -2,6 +2,8 @@
 
 from frontend.ast import Node
 from frontend.lexer import TOKENS, TOKEN_IDS
+import os
+import frontend
 
 ## This file defines the recursive descent parser. You will likely
 ## need to make changes in this file!
@@ -85,6 +87,7 @@ class _Parser(object):
     #       | ExprStmt
     def stmt(self, idx):
         lookahead = {
+            TOKEN_IDS["IMPORT"]: self.import_stmt,
             TOKEN_IDS["VAR"]: self.decl_stmt,
             TOKEN_IDS["NAME"]: self.name_start_stmts,
             TOKEN_IDS["PRINT"]: self.print_stmt,
@@ -109,6 +112,20 @@ class _Parser(object):
             TOKEN_IDS["("]: self.expr_stmt,
         }
         return self.dispatch(idx, lookahead)
+    
+    # ImportStmt -> IMPORT NAME
+    # ImportStmt -> IMPORT NAME, NAME
+    def import_stmt(self, idx):
+        _, file_idx = self.consume(idx, TOKEN_IDS["IMPORT"])
+        filename_token, name_idx = self.consume(file_idx, TOKEN_IDS["NAME"])
+        path = filename_token.lexeme + ".sile"
+        if not os.path.exists(path):
+            raise OptionParseException("path %s does not exist" % path)
+        with open(path) as f:
+            tokens = frontend.tokenize(f.read())
+        node = parse(tokens)
+        n = Node("import").addkid(Node("NAME", filename_token.lexeme)).addkid(node)
+        return n, name_idx
 
     # DeclStmt -> VAR NAME = Expr
     def decl_stmt(self, idx):
@@ -176,7 +193,7 @@ class _Parser(object):
     # IfStmt -> if Expr BlockStmt else BlockStmt
     # IfStmt -> if Expr BlockStmt
     def if_stmt(self, idx):
-        # TODO: IMPLEMENT ME
+        # Consume all the input similar in the three grammars shown above. 
         _, if_idx = self.consume(idx, TOKEN_IDS["IF"])
         expr, expr_idx = self.expr(if_idx)
         block, block_idx = self.block_stmt(expr_idx)
@@ -192,7 +209,7 @@ class _Parser(object):
         # Look ahead and create if statement. 
         lookahead = {
                 TOKEN_IDS["{"]: self.block_stmt,
-                TOKEN_IDS["IF"]: self.if_stmt,
+                TOKEN_IDS["IF"]: self.stmts,
             }
         next_node, next_idx = self.dispatch(else_idx, lookahead)
 
@@ -217,6 +234,8 @@ class _Parser(object):
         except SileParseError:
             n = Node("break")
             return n, break_idx
+    
+        # If break statement has label, add the label to the node. 
         n = Node("break").addkid(Node("NAME", value=name.lexeme))
         return n, name_idx
 
@@ -229,6 +248,8 @@ class _Parser(object):
         except SileParseError:
             n = Node("continue")
             return n, continue_idx
+    
+        #If continue statement has label, add the label to the node. 
         n = Node("continue").addkid(Node("NAME", value = name.lexeme))
         return n, name_idx
 

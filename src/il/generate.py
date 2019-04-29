@@ -63,6 +63,7 @@ class IlGenerator(object):
 
     def stmt(self, blk, n):
         return self.dispatch_stmt(blk, n, {
+            "import": self.import_action,
             "decl": self.decl_action,
             "assign": self.assign_action,
             "expr-stmt": self.expr_stmt_action,
@@ -77,6 +78,16 @@ class IlGenerator(object):
             "stmts": self.stmts,
         })
 
+    def import_action(self, blk, n):
+        # Create a new module. 
+        print("IMport")
+        modules = generate(n.children[1])
+        print("Done")
+        for mod in modules:
+            self.modules.add(mod)
+        return blk
+        
+        
     def decl_action(self, blk, n):
         name = n.children[0].value
         dest = self.new_register(n.children[1].type)
@@ -156,26 +167,23 @@ class IlGenerator(object):
         return new
 
     def if_action(self, entry, n):
-        # TODO: IMPLEMENT
-        # Look at sample of IF AST node. 
-        # Parse each expr and write the intermediate code. 
-        # Entry -> block 
-        # n -> AST node of IF. 
-        
-        # Create new blocks for a typical IF statement. 
         body = self.function().new_block()
         afterwards = self.function().new_block()
         
         # Evaluate the condition expr.
         cond, cond_out = self.expr(entry, None, n.children[0])
+        
+        # Evaluate the body of the conditional. 
         body_out = self.stmts(body, n.children[1])
+        
+        # Always goes to the afterwards block after if loop. 
         body_out.goto_link(afterwards)
+        
+        # If the cond is true, go to body else to afterwards. 
         cond_out.if_link(cond, body, afterwards)
         return afterwards
 
     def while_action(self, entry, n):
-        # Check if this a labelled loop, if true, use the continue and exit 
-        # block from the symbol table. 
         header = self.function().new_block()
         body = self.function().new_block()
         afterwards = self.function().new_block()
@@ -192,20 +200,34 @@ class IlGenerator(object):
         return afterwards
 
     def label_action(self, entry, n):
-        # TODO: IMPLEMENT
-        # Get the loop cont and exit. 
+        # Blocks for continue, body and exit. 
+        continue_blk = self.function().new_block()
+        body_blk = self.function().new_block()
+        exit_blk = self.function().new_block()
+        
+        # Add label to the symbol table mapping to a LabeledLoop. 
         label_name = n.children[0].value
-        self.function().add_label(label_name, self.function().new_block(), self.function().new_block())
-        return entry
+        self.symbols[label_name] = il.LabeledLoop(continue_blk, exit_blk)
+        
+        # Use the internal while action to pass your own continue, body and exit_blks. 
+        afterwards = self._while_action(entry, n.children[1], continue_blk, body_blk, exit_blk)
+        return afterwards
 
     def break_action(self, blk, n):
-        # TODO: IMPLEMENT
+        
+        # If no children, exit out of the nearest loop. 
         if len(n.children) == 0:
-            header = self.function().loop_exit()
+            exit_blk = self.function().loop_exit()
         else:
+            # Find the labelled loop record in the symbol_table. 
+            # Retrieve the exit blk of the loop. 
             label = n.children[0].value
-            header = self.symbols[label].exit_blk
-        blk.goto_link(header)
+            exit_blk = self.symbols[label].exit_blk
+        
+        # Add a goto link to the exit block of the corresponding loop. 
+        blk.goto_link(exit_blk)
+        
+        # Create a new empty block and return for other instructions to be added. 
         dead = self.function().new_block()
         return dead
 
@@ -253,9 +275,13 @@ class IlGenerator(object):
             # Add the parameter to symbol_table. 
             self.symbols[param.name] = param_register 
             
-            # Create local registers for parameters. 
+            # Append PRM instructions to the function_block. 
+            # This instruction gives the id of each parameter which can be 
+            # referenced by the called function to lookup the parameter value 
+            # in the params of the function frame. 
             function_block.append(il.Instruction(il.OPS['PRM'], il.Constant(param.id, param.type), None, param_register))
             
+        # Fill out instructions in the function_block. 
         self.stmts(function_block, body)
         
         # Remove the function from the function list. 
@@ -271,7 +297,6 @@ class IlGenerator(object):
             "*": self.binop(il.OPS['MUL']),
             "/": self.binop(il.OPS['DIV']),
             "%": self.binop(il.OPS['MOD']),         
-            ## TODO: ADD MISSING OPERATORS
             
             "==": self.binop(il.OPS['EQ']),
             "!=": self.binop(il.OPS['NE']),
@@ -308,7 +333,6 @@ class IlGenerator(object):
         return binop
 
     def not_op(self, blk, result, n):
-        # TODO: IMPLEMENT
         if not result:
             result = self.new_register(n.type)
         a, blk = self.expr(blk, result, n.children[0])
@@ -316,7 +340,6 @@ class IlGenerator(object):
         return result, blk
 
     def and_op(self, a_in_blk, result, n):
-        # TODO: IMPLEMENT
         if result is None:
             result = self.new_register(n.type)
         a, a_out_blk = self.expr(a_in_blk, result, n.children[0])
@@ -344,18 +367,20 @@ class IlGenerator(object):
         return result, exit_blk
 
     def call(self, blk, result, n):
-        # Find function reference, and append it to the block. 
         function_name = n.children[0].value
         exprs = n.children[1]
-        temp = []
+        parameters = []
+        
+        # Resolve each parameter 
         for expr in exprs.children:
             r, _ = self.expr(blk, None, expr)
-            temp.append(r)
-        # function = self.module.lookup(self.symbols.get(function_name))
+            parameters.append(r)
+        
         if result is None:
             result = self.function().new_register(n.type)
+            
         # SymbolTable returns the function reference. 
-        blk.append(il.Instruction(il.OPS['CALL'], self.symbols.get(function_name), temp, result))
+        blk.append(il.Instruction(il.OPS['CALL'], self.symbols.get(function_name), parameters, result))
         return result, blk
 
     def name(self, blk, result, n):

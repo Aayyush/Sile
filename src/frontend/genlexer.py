@@ -15,6 +15,8 @@ import subprocess
 DIR=os.path.dirname(__file__)
 
 patterns = (
+    ('FROM', r'from'),
+    ('IMPORT', r'import'),
     ('VAR', r'var'),
     ('PRINT', r'print'),
     ('IF', r'if'),

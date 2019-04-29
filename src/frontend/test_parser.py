@@ -67,15 +67,6 @@ def test_dispatch():
         TOKEN_IDS["NAME"]: true,
     })
 
-def test_swing():
-    left = Node("a")
-    op = Node("+")
-    right = Node("b")
-    prime = Node("prime").addkid(op).addkid(right)
-    final = Node("+").addkid(Node("a")).addkid(Node("b"))
-    assert final == parser._Parser(None).swing(left, prime)
-    assert Node("a") == parser._Parser(None).swing(left, None)
-
 def test_factor_name():
     tokens = lexer.tokenize("wizard")
     want = Node("NAME", "wizard")

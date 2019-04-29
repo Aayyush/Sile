@@ -181,6 +181,7 @@ class IlMachine(object):
             callee = self.value(inst.a)
             captured = []
             
+            # Return address is one instruction later than the current instruction. 
             return_addr = Address(addr.fn, addr.block, addr.inst + 1)
             if isinstance(callee, il.Function):
                 pass
@@ -189,13 +190,25 @@ class IlMachine(object):
                 callee = self.modules.lookup(callee.fn)
             else:
                 raise IlExecutionException("can't call a {}".format(callee))
+                
+            # Resolve all the parameters in the frame. 
+            # self.value() function looks up the parameters in the frame using
+            # the id in the instruction. 
             params = [self.value(param) for param in inst.b]
+            
+            # Push a new frame of execution for the current function. 
             frame = self.push_frame(return_addr, callee, inst.result, params, captured)
+            
+            # Start execution from block 0 and instruction 0. 
             self.execute(Address(callee, 0, 0))
+            
+            # Return None, because this exits the program after all functions
+            # are called. 
             return None
         elif inst.op == il.OPS['PRM']:
-            # Read params from the frame. 
             frame = self.frame()
+            
+            # Read the frame.params and store the value in a local register. 
             self.store(inst.result, frame.params[self.value(inst.a)])
         elif inst.op == il.OPS['RTRN']:
             frame = self.frame()
@@ -220,6 +233,8 @@ class IlMachine(object):
         # instrinsic
         elif inst.op == il.OPS['PRINT']:
             temp = self.value(inst.a)
+            
+            # Work around to print booleand values in lower case. 
             if isinstance(temp, bool):
                 print("true" if temp else "false")
             else:
