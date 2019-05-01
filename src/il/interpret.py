@@ -253,6 +253,7 @@ class IlMachine(object):
         elif isinstance(operand, il.ClosureRegister):
             return self.load_from_closure(operand)
         elif isinstance(operand, il.Param):
+            print("params")
             return self.frame().params[operand.id]
         elif isinstance(operand, il.FunctionRef):
             return self.modules.lookup(operand)
